@@ -27,6 +27,8 @@ class QuantumParticle {
         this.lifespan = Math.random() * 10000 + 5000;
         this.age = 0;
         this.decaying = false;
+        this.spin = Math.random() > 0.5 ? 1 : -1;
+        this.spinSpeed = Math.random() * 0.1 + 0.05;
         
         for (let i = 0; i < 8; i++) {
             const angle = (i / 8) * Math.PI * 2;
@@ -95,6 +97,12 @@ class QuantumParticle {
             ctx.beginPath();
             ctx.arc(this.baseX, this.baseY, 5, 0, Math.PI * 2);
             ctx.fill();
+            
+            ctx.strokeStyle = this.spin > 0 ? '#ff0000' : '#0000ff';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(this.baseX, this.baseY, 8, 0, Math.PI * 2 * this.spin * time * 0.001);
+            ctx.stroke();
             ctx.restore();
         } else {
             this.positions.forEach((pos, i) => {
