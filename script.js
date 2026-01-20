@@ -225,6 +225,21 @@ window.addEventListener('resize', () => {
     canvas.height = window.innerHeight;
 });
 
+window.addEventListener('keydown', (e) => {
+    switch(e.key) {
+        case 'c':
+            particles.forEach(p => { if (!p.collapsed) p.collapsed = true; });
+            break;
+        case 'r':
+            particles.length = 0;
+            countEl.textContent = '0';
+            break;
+        case 's':
+            particles.forEach(p => p.collapsed = false);
+            break;
+    }
+});
+
 for (let i = 0; i < 3; i++) {
     particles.push(new QuantumParticle(
         Math.random() * canvas.width,
