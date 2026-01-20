@@ -17,6 +17,8 @@ class QuantumParticle {
         this.phase = Math.random() * Math.PI * 2;
         this.waveLength = Math.random() * 100 + 50;
         this.color = `hsl(${Math.random() * 60 + 180}, 100%, 50%)`;
+        this.trail = [];
+        this.maxTrailLength = 20;
         
         for (let i = 0; i < 8; i++) {
             const angle = (i / 8) * Math.PI * 2;
@@ -37,11 +39,26 @@ class QuantumParticle {
                 pos.x = this.baseX + Math.cos((i / 8) * Math.PI * 2) * (this.waveLength + wave);
                 pos.y = this.baseY + Math.sin((i / 8) * Math.PI * 2) * (this.waveLength + wave);
             });
+        } else {
+            this.trail.push({x: this.baseX, y: this.baseY});
+            if (this.trail.length > this.maxTrailLength) {
+                this.trail.shift();
+            }
         }
     }
     
     draw(ctx, time) {
         if (this.collapsed) {
+            this.trail.forEach((point, i) => {
+                ctx.save();
+                ctx.globalAlpha = (i / this.trail.length) * 0.5;
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(point.x, point.y, 2, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            });
+            
             ctx.save();
             ctx.globalAlpha = 1;
             ctx.fillStyle = this.color;
