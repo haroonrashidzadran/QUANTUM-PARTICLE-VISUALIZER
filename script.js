@@ -20,6 +20,8 @@ class QuantumParticle {
         this.color = `hsl(${Math.random() * 60 + 180}, 100%, 50%)`;
         this.trail = [];
         this.maxTrailLength = 20;
+        this.velocity = { x: 0, y: 0 };
+        this.mass = 1;
         
         for (let i = 0; i < 8; i++) {
             const angle = (i / 8) * Math.PI * 2;
@@ -41,6 +43,11 @@ class QuantumParticle {
                 pos.y = this.baseY + Math.sin((i / 8) * Math.PI * 2) * (this.waveLength + wave);
             });
         } else {
+            this.baseX += this.velocity.x;
+            this.baseY += this.velocity.y;
+            this.velocity.x *= 0.99;
+            this.velocity.y *= 0.99;
+            
             this.trail.push({x: this.baseX, y: this.baseY});
             if (this.trail.length > this.maxTrailLength) {
                 this.trail.shift();
@@ -121,11 +128,37 @@ class QuantumParticle {
     }
 }
 
+function checkCollisions() {
+    for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+            const p1 = particles[i];
+            const p2 = particles[j];
+            
+            if (p1.collapsed && p2.collapsed) {
+                const dx = p2.baseX - p1.baseX;
+                const dy = p2.baseY - p1.baseY;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                if (distance < 20) {
+                    const angle = Math.atan2(dy, dx);
+                    const force = 0.5;
+                    p1.velocity.x -= Math.cos(angle) * force;
+                    p1.velocity.y -= Math.sin(angle) * force;
+                    p2.velocity.x += Math.cos(angle) * force;
+                    p2.velocity.y += Math.sin(angle) * force;
+                }
+            }
+        }
+    }
+}
+
 const particles = [];
 
 function animate(currentTime) {
     ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    checkCollisions();
     
     particles.forEach(particle => {
         particle.update(currentTime);
