@@ -22,6 +22,8 @@ class QuantumParticle {
         this.maxTrailLength = 20;
         this.velocity = { x: 0, y: 0 };
         this.mass = 1;
+        this.entangled = null;
+        this.entanglementStrength = 0;
         
         for (let i = 0; i < 8; i++) {
             const angle = (i / 8) * Math.PI * 2;
@@ -42,6 +44,13 @@ class QuantumParticle {
                 pos.x = this.baseX + Math.cos((i / 8) * Math.PI * 2) * (this.waveLength + wave);
                 pos.y = this.baseY + Math.sin((i / 8) * Math.PI * 2) * (this.waveLength + wave);
             });
+            
+            if (this.entangled && !this.entangled.collapsed) {
+                this.entangled.positions.forEach((pos, i) => {
+                    pos.x = this.entangled.baseX - (this.positions[i].x - this.baseX);
+                    pos.y = this.entangled.baseY - (this.positions[i].y - this.baseY);
+                });
+            }
         } else {
             this.baseX += this.velocity.x;
             this.baseY += this.velocity.y;
@@ -122,6 +131,13 @@ class QuantumParticle {
             this.baseX = closestPos.x;
             this.baseY = closestPos.y;
             this.collapsed = true;
+            
+            if (this.entangled && !this.entangled.collapsed) {
+                this.entangled.collapsed = true;
+                this.entangled.baseX = this.entangled.positions[0].x;
+                this.entangled.baseY = this.entangled.positions[0].y;
+            }
+            
             return true;
         }
         return false;
@@ -188,7 +204,18 @@ canvas.addEventListener('click', (e) => {
     });
     
     if (!collapsed) {
-        particles.push(new QuantumParticle(x, y));
+        const newParticle = new QuantumParticle(x, y);
+        
+        if (particles.length > 0 && Math.random() < 0.3) {
+            const partner = particles[Math.floor(Math.random() * particles.length)];
+            if (!partner.entangled && !partner.collapsed) {
+                newParticle.entangled = partner;
+                partner.entangled = newParticle;
+                newParticle.color = partner.color;
+            }
+        }
+        
+        particles.push(newParticle);
         countEl.textContent = particles.length;
     }
 });
