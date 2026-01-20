@@ -2,6 +2,7 @@ const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 const countEl = document.getElementById('count');
 const uncertaintyEl = document.getElementById('uncertainty');
+const energyEl = document.getElementById('energy');
 
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
@@ -134,6 +135,9 @@ function animate(currentTime) {
     const uncollapsed = particles.filter(p => !p.collapsed).length;
     const uncertainty = uncollapsed > 0 ? (uncollapsed * 47.3).toFixed(1) : '0';
     uncertaintyEl.textContent = `Uncertainty: ${uncertainty}ℏ`;
+    
+    const totalEnergy = particles.reduce((sum, p) => sum + p.energy, 0);
+    energyEl.textContent = totalEnergy.toFixed(1);
     
     requestAnimationFrame(animate);
 }
