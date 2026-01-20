@@ -24,6 +24,9 @@ class QuantumParticle {
         this.mass = 1;
         this.entangled = null;
         this.entanglementStrength = 0;
+        this.lifespan = Math.random() * 10000 + 5000;
+        this.age = 0;
+        this.decaying = false;
         
         for (let i = 0; i < 8; i++) {
             const angle = (i / 8) * Math.PI * 2;
@@ -37,6 +40,12 @@ class QuantumParticle {
     }
     
     update(time) {
+        this.age += 16;
+        if (this.age > this.lifespan) {
+            this.decaying = true;
+            this.energy *= 0.98;
+        }
+        
         if (!this.collapsed) {
             this.phase += 0.02;
             this.positions.forEach((pos, i) => {
@@ -65,6 +74,8 @@ class QuantumParticle {
     }
     
     draw(ctx, time) {
+        const decayAlpha = this.decaying ? Math.max(0.1, this.energy / 5) : 1;
+        
         if (this.collapsed) {
             this.trail.forEach((point, i) => {
                 ctx.save();
@@ -77,7 +88,7 @@ class QuantumParticle {
             });
             
             ctx.save();
-            ctx.globalAlpha = 1;
+            ctx.globalAlpha = decayAlpha;
             ctx.fillStyle = this.color;
             ctx.shadowBlur = 20;
             ctx.shadowColor = this.color;
@@ -88,7 +99,7 @@ class QuantumParticle {
         } else {
             this.positions.forEach((pos, i) => {
                 ctx.save();
-                const alpha = (Math.sin(time * 0.003 + i * 0.3) + 1) * 0.3 * this.probabilities[i];
+                const alpha = (Math.sin(time * 0.003 + i * 0.3) + 1) * 0.3 * this.probabilities[i] * decayAlpha;
                 ctx.globalAlpha = alpha;
                 ctx.fillStyle = this.color;
                 ctx.shadowBlur = 15;
@@ -180,6 +191,13 @@ function animate(currentTime) {
         particle.update(currentTime);
         particle.draw(ctx, currentTime);
     });
+    
+    for (let i = particles.length - 1; i >= 0; i--) {
+        if (particles[i].energy < 0.1) {
+            particles.splice(i, 1);
+            countEl.textContent = particles.length;
+        }
+    }
     
     const uncollapsed = particles.filter(p => !p.collapsed).length;
     const uncertainty = uncollapsed > 0 ? (uncollapsed * 47.3).toFixed(1) : '0';
