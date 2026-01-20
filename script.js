@@ -29,6 +29,8 @@ class QuantumParticle {
         this.decaying = false;
         this.spin = Math.random() > 0.5 ? 1 : -1;
         this.spinSpeed = Math.random() * 0.1 + 0.05;
+        this.tunneling = false;
+        this.tunnelCooldown = 0;
         
         for (let i = 0; i < 8; i++) {
             const angle = (i / 8) * Math.PI * 2;
@@ -63,6 +65,15 @@ class QuantumParticle {
                 });
             }
         } else {
+            this.tunnelCooldown--;
+            
+            if (this.tunnelCooldown <= 0 && Math.random() < 0.001) {
+                this.tunneling = true;
+                this.baseX = Math.random() * canvas.width;
+                this.baseY = Math.random() * canvas.height;
+                this.tunnelCooldown = 300;
+            }
+            
             this.baseX += this.velocity.x;
             this.baseY += this.velocity.y;
             this.velocity.x *= 0.99;
@@ -79,6 +90,16 @@ class QuantumParticle {
         const decayAlpha = this.decaying ? Math.max(0.1, this.energy / 5) : 1;
         
         if (this.collapsed) {
+            if (this.tunneling) {
+                ctx.save();
+                ctx.globalAlpha = 0.3;
+                ctx.fillStyle = '#ffffff';
+                ctx.beginPath();
+                ctx.arc(this.baseX, this.baseY, 15, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+                this.tunneling = false;
+            }
             this.trail.forEach((point, i) => {
                 ctx.save();
                 ctx.globalAlpha = (i / this.trail.length) * 0.5;
