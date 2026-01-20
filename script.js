@@ -155,6 +155,34 @@ class QuantumParticle {
     }
 }
 
+function drawInterference() {
+    for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+            const p1 = particles[i];
+            const p2 = particles[j];
+            
+            if (!p1.collapsed && !p2.collapsed) {
+                const dx = p2.baseX - p1.baseX;
+                const dy = p2.baseY - p1.baseY;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                if (distance < 300) {
+                    ctx.save();
+                    ctx.globalAlpha = 0.1 * (1 - distance / 300);
+                    ctx.strokeStyle = '#ffffff';
+                    ctx.lineWidth = 1;
+                    ctx.setLineDash([5, 5]);
+                    ctx.beginPath();
+                    ctx.moveTo(p1.baseX, p1.baseY);
+                    ctx.lineTo(p2.baseX, p2.baseY);
+                    ctx.stroke();
+                    ctx.restore();
+                }
+            }
+        }
+    }
+}
+
 function checkCollisions() {
     for (let i = 0; i < particles.length; i++) {
         for (let j = i + 1; j < particles.length; j++) {
@@ -186,6 +214,7 @@ function animate(currentTime) {
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     
     checkCollisions();
+    drawInterference();
     
     particles.forEach(particle => {
         particle.update(currentTime);
