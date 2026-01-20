@@ -3,6 +3,8 @@ const ctx = canvas.getContext('2d');
 const countEl = document.getElementById('count');
 const uncertaintyEl = document.getElementById('uncertainty');
 const energyEl = document.getElementById('energy');
+const entangledEl = document.getElementById('entangled');
+const decayingEl = document.getElementById('decaying');
 
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
@@ -263,6 +265,12 @@ function animate(currentTime) {
     
     const totalEnergy = particles.reduce((sum, p) => sum + p.energy, 0);
     energyEl.textContent = totalEnergy.toFixed(1);
+    
+    const entangledCount = particles.filter(p => p.entangled).length;
+    entangledEl.textContent = `Entangled: ${entangledCount}`;
+    
+    const decayingCount = particles.filter(p => p.decaying).length;
+    decayingEl.textContent = `Decaying: ${decayingCount}`;
     
     requestAnimationFrame(animate);
 }
