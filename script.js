@@ -130,14 +130,17 @@ class QuantumParticle {
             ctx.restore();
         } else {
             this.positions.forEach((pos, i) => {
+                const mouseDist = Math.sqrt((pos.x - mouseX) ** 2 + (pos.y - mouseY) ** 2);
+                const mouseEffect = Math.max(0, 1 - mouseDist / 100);
+                
                 ctx.save();
                 const alpha = (Math.sin(time * 0.003 + i * 0.3) + 1) * 0.3 * this.probabilities[i] * decayAlpha;
-                ctx.globalAlpha = alpha;
+                ctx.globalAlpha = alpha + mouseEffect * 0.3;
                 ctx.fillStyle = this.color;
-                ctx.shadowBlur = 15;
+                ctx.shadowBlur = 15 + mouseEffect * 10;
                 ctx.shadowColor = this.color;
                 ctx.beginPath();
-                ctx.arc(pos.x, pos.y, 3, 0, Math.PI * 2);
+                ctx.arc(pos.x, pos.y, 3 + mouseEffect * 2, 0, Math.PI * 2);
                 ctx.fill();
                 ctx.restore();
                 
@@ -239,6 +242,9 @@ function checkCollisions() {
     }
 }
 
+let mouseX = 0;
+let mouseY = 0;
+
 const particles = [];
 
 function animate(currentTime) {
@@ -275,6 +281,12 @@ function animate(currentTime) {
     
     requestAnimationFrame(animate);
 }
+
+canvas.addEventListener('mousemove', (e) => {
+    const rect = canvas.getBoundingClientRect();
+    mouseX = e.clientX - rect.left;
+    mouseY = e.clientY - rect.top;
+});
 
 canvas.addEventListener('click', (e) => {
     const rect = canvas.getBoundingClientRect();
