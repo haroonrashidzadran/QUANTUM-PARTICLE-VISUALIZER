@@ -38,6 +38,7 @@ class QuantumParticle {
         this.size = Math.random() * 3 + 2;
         this.temperature = Math.random() * 100 + 50;
         this.magnetic = Math.random() > 0.7;
+        this.charge = Math.random() > 0.5 ? 1 : -1;
         
         for (let i = 0; i < 8; i++) {
             const angle = (i / 8) * Math.PI * 2;
@@ -119,7 +120,7 @@ class QuantumParticle {
             
             ctx.save();
             ctx.globalAlpha = decayAlpha;
-            ctx.fillStyle = this.color;
+            ctx.fillStyle = this.charge > 0 ? '#ff6666' : '#6666ff';
             ctx.shadowBlur = 20 * this.glowIntensity;
             ctx.shadowColor = this.color;
             ctx.beginPath();
@@ -249,7 +250,7 @@ function checkCollisions() {
                 
                 if (distance < 20) {
                     const angle = Math.atan2(dy, dx);
-                    const force = 0.5;
+                    const force = p1.charge === p2.charge ? 0.5 : -0.3;
                     p1.velocity.x -= Math.cos(angle) * force;
                     p1.velocity.y -= Math.sin(angle) * force;
                     p2.velocity.x += Math.cos(angle) * force;
