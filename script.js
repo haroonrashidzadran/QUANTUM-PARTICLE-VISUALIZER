@@ -84,6 +84,7 @@ class QuantumParticle {
                 this.tunnelCooldown = 300;
             }
             
+            this.velocity.y += GRAVITY;
             this.baseX += this.velocity.x;
             this.baseY += this.velocity.y;
             this.momentum.x = this.velocity.x * this.mass;
@@ -274,6 +275,7 @@ function checkCollisions() {
 let mouseX = 0;
 let mouseY = 0;
 const MAX_PARTICLES = 50;
+const GRAVITY = 0.001;
 
 const particles = [];
 
