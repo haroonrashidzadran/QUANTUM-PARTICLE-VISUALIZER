@@ -245,6 +245,12 @@ function checkCollisions() {
                     p1.velocity.y += Math.sin(angle) * force;
                     p2.velocity.x -= Math.cos(angle) * force;
                     p2.velocity.y -= Math.sin(angle) * force;
+                    
+                    if (distance < 10) {
+                        p1.energy += p2.energy * 0.1;
+                        p1.size += 0.1;
+                        p2.energy *= 0.9;
+                    }
                 }
             } else if (p1.collapsed && p2.collapsed) {
                 const dx = p2.baseX - p1.baseX;
