@@ -33,6 +33,7 @@ class QuantumParticle {
         this.spinSpeed = Math.random() * 0.1 + 0.05;
         this.tunneling = false;
         this.tunnelCooldown = 0;
+        this.glowIntensity = Math.random() * 0.5 + 0.5;
         
         for (let i = 0; i < 8; i++) {
             const angle = (i / 8) * Math.PI * 2;
@@ -115,7 +116,7 @@ class QuantumParticle {
             ctx.save();
             ctx.globalAlpha = decayAlpha;
             ctx.fillStyle = this.color;
-            ctx.shadowBlur = 20;
+            ctx.shadowBlur = 20 * this.glowIntensity;
             ctx.shadowColor = this.color;
             ctx.beginPath();
             ctx.arc(this.baseX, this.baseY, 5, 0, Math.PI * 2);
