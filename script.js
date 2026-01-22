@@ -245,6 +245,7 @@ function checkCollisions() {
 
 let mouseX = 0;
 let mouseY = 0;
+const MAX_PARTICLES = 50;
 
 const particles = [];
 
@@ -326,19 +327,21 @@ canvas.addEventListener('click', (e) => {
     });
     
     if (!collapsed) {
-        const newParticle = new QuantumParticle(x, y);
-        
-        if (particles.length > 0 && Math.random() < 0.3) {
-            const partner = particles[Math.floor(Math.random() * particles.length)];
-            if (!partner.entangled && !partner.collapsed) {
-                newParticle.entangled = partner;
-                partner.entangled = newParticle;
-                newParticle.color = partner.color;
+        if (particles.length < MAX_PARTICLES) {
+            const newParticle = new QuantumParticle(x, y);
+            
+            if (particles.length > 0 && Math.random() < 0.3) {
+                const partner = particles[Math.floor(Math.random() * particles.length)];
+                if (!partner.entangled && !partner.collapsed) {
+                    newParticle.entangled = partner;
+                    partner.entangled = newParticle;
+                    newParticle.color = partner.color;
+                }
             }
+            
+            particles.push(newParticle);
+            countEl.textContent = particles.length;
         }
-        
-        particles.push(newParticle);
-        countEl.textContent = particles.length;
     }
 });
 
