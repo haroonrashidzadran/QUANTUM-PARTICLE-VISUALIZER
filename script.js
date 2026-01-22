@@ -40,6 +40,7 @@ class QuantumParticle {
         this.magnetic = Math.random() > 0.7;
         this.charge = Math.random() > 0.5 ? 1 : -1;
         this.momentum = { x: 0, y: 0 };
+        this.frequency = Math.random() * 0.02 + 0.01;
         
         for (let i = 0; i < 8; i++) {
             const angle = (i / 8) * Math.PI * 2;
@@ -60,7 +61,7 @@ class QuantumParticle {
         }
         
         if (!this.collapsed) {
-            this.phase += 0.02;
+            this.phase += this.frequency;
             this.positions.forEach((pos, i) => {
                 const wave = Math.sin(time * 0.001 + this.phase + i * 0.5) * 20;
                 pos.x = this.baseX + Math.cos((i / 8) * Math.PI * 2) * (this.waveLength + wave);
