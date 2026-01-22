@@ -36,6 +36,7 @@ class QuantumParticle {
         this.tunnelCooldown = 0;
         this.glowIntensity = Math.random() * 0.5 + 0.5;
         this.size = Math.random() * 3 + 2;
+        this.temperature = Math.random() * 100 + 50;
         
         for (let i = 0; i < 8; i++) {
             const angle = (i / 8) * Math.PI * 2;
@@ -136,10 +137,11 @@ class QuantumParticle {
                 const mouseEffect = Math.max(0, 1 - mouseDist / 100);
                 
                 ctx.save();
+                const tempEffect = this.temperature / 100;
                 const alpha = (Math.sin(time * 0.003 + i * 0.3) + 1) * 0.3 * this.probabilities[i] * decayAlpha;
                 ctx.globalAlpha = alpha + mouseEffect * 0.3;
-                ctx.fillStyle = this.color;
-                ctx.shadowBlur = 15 + mouseEffect * 10;
+                ctx.fillStyle = `hsl(${(this.temperature - 50) * 2 + 180}, 100%, 50%)`;
+                ctx.shadowBlur = 15 + mouseEffect * 10 + tempEffect * 5;
                 ctx.shadowColor = this.color;
                 ctx.beginPath();
                 ctx.arc(pos.x, pos.y, 3 + mouseEffect * 2, 0, Math.PI * 2);
