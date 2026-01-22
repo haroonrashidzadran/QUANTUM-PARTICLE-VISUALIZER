@@ -5,6 +5,7 @@ const uncertaintyEl = document.getElementById('uncertainty');
 const energyEl = document.getElementById('energy');
 const entangledEl = document.getElementById('entangled');
 const decayingEl = document.getElementById('decaying');
+const velocityEl = document.getElementById('velocity');
 
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
@@ -304,6 +305,9 @@ function animate(currentTime) {
     
     const decayingCount = particles.filter(p => p.decaying).length;
     decayingEl.textContent = `Decaying: ${decayingCount}`;
+    
+    const avgVel = particles.reduce((sum, p) => sum + Math.sqrt(p.velocity.x**2 + p.velocity.y**2), 0) / particles.length || 0;
+    velocityEl.textContent = `Avg Velocity: ${avgVel.toFixed(2)}`;
     
     requestAnimationFrame(animate);
 }
