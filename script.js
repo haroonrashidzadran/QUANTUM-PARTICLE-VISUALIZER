@@ -39,6 +39,7 @@ class QuantumParticle {
         this.temperature = Math.random() * 100 + 50;
         this.magnetic = Math.random() > 0.7;
         this.charge = Math.random() > 0.5 ? 1 : -1;
+        this.momentum = { x: 0, y: 0 };
         
         for (let i = 0; i < 8; i++) {
             const angle = (i / 8) * Math.PI * 2;
@@ -84,6 +85,8 @@ class QuantumParticle {
             
             this.baseX += this.velocity.x;
             this.baseY += this.velocity.y;
+            this.momentum.x = this.velocity.x * this.mass;
+            this.momentum.y = this.velocity.y * this.mass;
             this.velocity.x *= 0.99;
             this.velocity.y *= 0.99;
             
