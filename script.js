@@ -37,6 +37,7 @@ class QuantumParticle {
         this.glowIntensity = Math.random() * 0.5 + 0.5;
         this.size = Math.random() * 3 + 2;
         this.temperature = Math.random() * 100 + 50;
+        this.magnetic = Math.random() > 0.7;
         
         for (let i = 0; i < 8; i++) {
             const angle = (i / 8) * Math.PI * 2;
@@ -126,7 +127,7 @@ class QuantumParticle {
             ctx.fill();
             
             ctx.strokeStyle = this.spin > 0 ? '#ff0000' : '#0000ff';
-            ctx.lineWidth = 2;
+            ctx.lineWidth = this.magnetic ? 3 : 2;
             ctx.beginPath();
             ctx.arc(this.baseX, this.baseY, 8, 0, Math.PI * 2 * this.spin * time * 0.001);
             ctx.stroke();
@@ -228,7 +229,20 @@ function checkCollisions() {
             const p1 = particles[i];
             const p2 = particles[j];
             
-            if (p1.collapsed && p2.collapsed) {
+            if (p1.collapsed && p2.collapsed && p1.magnetic && p2.magnetic) {
+                const dx = p2.baseX - p1.baseX;
+                const dy = p2.baseY - p1.baseY;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                if (distance < 100) {
+                    const angle = Math.atan2(dy, dx);
+                    const force = 0.2;
+                    p1.velocity.x += Math.cos(angle) * force;
+                    p1.velocity.y += Math.sin(angle) * force;
+                    p2.velocity.x -= Math.cos(angle) * force;
+                    p2.velocity.y -= Math.sin(angle) * force;
+                }
+            } else if (p1.collapsed && p2.collapsed) {
                 const dx = p2.baseX - p1.baseX;
                 const dy = p2.baseY - p1.baseY;
                 const distance = Math.sqrt(dx * dx + dy * dy);
