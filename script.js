@@ -386,6 +386,13 @@ window.addEventListener('keydown', (e) => {
         case 's':
             particles.forEach(p => p.collapsed = false);
             break;
+        case 'o':
+            particles.forEach(p => {
+                if (!p.collapsed) {
+                    p.waveLength = Math.random() * 200 + 25;
+                }
+            });
+            break;
     }
 });
 
