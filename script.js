@@ -87,6 +87,11 @@ class QuantumParticle {
             this.velocity.y += GRAVITY;
             this.baseX += this.velocity.x;
             this.baseY += this.velocity.y;
+            
+            if (this.baseX < 0 || this.baseX > canvas.width) this.velocity.x *= -0.8;
+            if (this.baseY < 0 || this.baseY > canvas.height) this.velocity.y *= -0.8;
+            this.baseX = Math.max(0, Math.min(canvas.width, this.baseX));
+            this.baseY = Math.max(0, Math.min(canvas.height, this.baseY));
             this.momentum.x = this.velocity.x * this.mass;
             this.momentum.y = this.velocity.y * this.mass;
             this.velocity.x *= 0.99;
